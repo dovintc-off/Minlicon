@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net9.0-android</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.*" Condition="'$(TargetFramework)' == 'net9.0-android'" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,25 @@
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+#---------------------------------- Content ---------------------------------#
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Cursor.png
+/build:Grass_1.png
+/build:Grass_2.png
+/build:Grass_3.png
+/build:Grass_4.png
+/build:UMad.png
+
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:DebugFont.spritefont

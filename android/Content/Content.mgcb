@@ -1,0 +1,27 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:Android
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ---------------------------------#
+
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:../../core/Content/Cursor.png;Cursor
+/build:../../core/Content/Grass_1.png;Grass_1
+/build:../../core/Content/Grass_2.png;Grass_2
+/build:../../core/Content/Grass_3.png;Grass_3
+/build:../../core/Content/Grass_4.png;Grass_4
+/build:../../core/Content/UMad.png;UMad
+
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:../../core/Content/DebugFont.spritefont;DebugFont

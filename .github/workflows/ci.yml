@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  desktop:
+    name: Desktop build and tests
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Run test projects, if present
+        shell: pwsh
+        run: |
+          $projects = Get-ChildItem -Path . -Recurse -Filter '*Tests.csproj' |
+            Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' }
+          if ($projects.Count -eq 0) {
+            Write-Host "No test projects are currently defined."
+          } else {
+            foreach ($project in $projects) {
+              dotnet test $project.FullName --configuration Release
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            }
+          }
+
+      - name: Build desktop
+        run: dotnet build .\desktop\desktop.csproj --configuration Release
+
+  android:
+    name: Android build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Install Android SDK packages
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+
+      - name: Install .NET Android workload
+        run: dotnet workload install android
+
+      - name: Prepare font for MonoGame content pipeline
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fontconfig fonts-liberation
+          font_path="$(fc-match -f '%{file}' Arial)"
+          test -f "$font_path"
+          cp "$font_path" ./desktop/Content/Arial.ttf
+
+      - name: Build Android
+        run: dotnet build ./android/android.csproj --configuration Release -p:AndroidSdkDirectory="$ANDROID_HOME" -m:1

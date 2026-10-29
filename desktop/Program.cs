@@ -1,0 +1,1 @@
+﻿new Minlicon.Desktop.MainDesktop().Run();
