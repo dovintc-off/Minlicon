@@ -13,47 +13,47 @@ public enum Grounds {
 }
     
 public class Main : Game {
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch? _spriteBatch;
+    protected GraphicsDeviceManager _graphics;
+    protected SpriteBatch? _spriteBatch;
 
-    private const int MapWidth = 100;
-    private const int MapHeight = 100;
-    private const int TileSize = 32;
+    protected const int MapWidth = 100;
+    protected const int MapHeight = 100;
+    protected const int TileSize = 32;
 
-    private readonly int[,,] GLayer = new int[MapWidth, MapHeight, 3];
-    int[,] BLayer = new int[MapWidth, MapHeight];
-    private readonly Texture2D?[] _grassTextures = new Texture2D?[5];
-    private Texture2D? _specialTexture;
+    protected readonly int[,,] GLayer = new int[MapWidth, MapHeight, 3];
+    protected int[,] BLayer = new int[MapWidth, MapHeight];
+    protected readonly Texture2D?[] _grassTextures = new Texture2D?[5];
+    protected Texture2D? _specialTexture;
 
-    float WorldCameraX = 0f;
-    float WorldCameraY = 0f;
+    protected float WorldCameraX = 0f;
+    protected float WorldCameraY = 0f;
 
-    float Zoom = 1.0f;
-    private float _targetZoom = 1.0f;
-    private float _minZoom = 0.5f;
-    private float _maxZoom = 1.5f;
+    protected float Zoom = 1.0f;
+    protected float _targetZoom = 1.0f;
+    protected float _minZoom = 0.5f;
+    protected float _maxZoom = 1.5f;
 
-    private Texture2D? _cursorTexture;
-    private Point _hoveredTile = new Point(-1, -1);
-    private Vector2 _mouseScreenPos;
+    protected Texture2D? _cursorTexture;
+    protected Point _hoveredTile = new Point(-1, -1);
+    protected Vector2 _mouseScreenPos;
 
-    private SpriteFont? _debugFont;
-    private bool _showDebug = false;
-    private double _fps;
-    private double _tickAccumulator;
-    private long _fpsWindowStartTimestamp;
-    private int _renderedFrames;
-    private string _fpsText = "FPS: 0";
-    private Texture2D? _pixelBackground;
+    protected SpriteFont? _debugFont;
+    protected bool _showDebug = false;
+    protected double _fps;
+    protected double _tickAccumulator;
+    protected long _fpsWindowStartTimestamp;
+    protected int _renderedFrames;
+    protected string _fpsText = "FPS: 0";
+    protected Texture2D? _pixelBackground;
 
-    private const double SimulationTickDuration = 1.0 / 60.0;
-    private const double MaximumAccumulatedTime = 0.25;
+    protected const double SimulationTickDuration = 1.0 / 60.0;
+    protected const double MaximumAccumulatedTime = 0.25;
 
-    MouseState _prevMouseState;
-    KeyboardState _prevKeyboardState;
-    private int _previousTouchId = -1;
-    private Vector2 _previousTouchPosition;
-    private float _previousPinchDistance;
+    protected MouseState _prevMouseState;
+    protected KeyboardState _prevKeyboardState;
+    protected int _previousTouchId = -1;
+    protected  Vector2 _previousTouchPosition;
+    protected  float _previousPinchDistance;
 
     public Main() {
         _graphics = new GraphicsDeviceManager(this);
@@ -67,18 +67,16 @@ public class Main : Game {
         IsMouseVisible = false;
     }
 
+    // Dynamic adaptation
+    protected virtual void ConfigurePlatformGraphics() {}
+    // Input
+    protected virtual void HandlePlatformInput(KeyboardState kState, MouseState mState) {}
+    // Cursor
+    protected virtual void DrawPlatformCursor(SpriteBatch spriteBatch, Texture2D cursorTexture) {}
+
     protected override void Initialize() {
-        // Dynamic adaptation
-#if ANDROID
-        _graphics.IsFullScreen = true;
-        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-#else
-        _graphics.PreferredBackBufferWidth = 1280;
-        _graphics.PreferredBackBufferHeight = 720;
-        _graphics.IsFullScreen = false;
-        this.Window.Title = "Minlicon";
-#endif
+        
+        ConfigurePlatformGraphics();
         _graphics.ApplyChanges();
 
         TouchPanel.EnabledGestures = GestureType.Tap | GestureType.Pinch;
@@ -136,102 +134,13 @@ public class Main : Game {
                 _showDebug = !_showDebug;
             }
 
-            HandleUniversalInput(kState, mState);
+            HandlePlatformInput(kState, mState);
             _prevMouseState = mState;
             _prevKeyboardState = kState;
             _tickAccumulator -= SimulationTickDuration;
         }
 
         base.Update(gameTime);
-    }
-
-    private void HandleUniversalInput(KeyboardState kState, MouseState mState) {
-        // Keyboard movement remains available alongside mouse dragging on desktop.
-        float cameraSpeed = 8f;
-        if (kState.IsKeyDown(Keys.LeftShift) || kState.IsKeyDown(Keys.RightShift)) cameraSpeed *= 2.5f;
-
-        if (kState.IsKeyDown(Keys.A)) WorldCameraX -= cameraSpeed;
-        if (kState.IsKeyDown(Keys.D)) WorldCameraX += cameraSpeed;
-        if (kState.IsKeyDown(Keys.W)) WorldCameraY -= cameraSpeed;
-        if (kState.IsKeyDown(Keys.S)) WorldCameraY += cameraSpeed;
-
-        if (mState.LeftButton == ButtonState.Pressed && _prevMouseState.LeftButton == ButtonState.Pressed) {
-            Vector2 mouseDelta = mState.Position.ToVector2() - _prevMouseState.Position.ToVector2();
-            WorldCameraX -= mouseDelta.X / Zoom;
-            WorldCameraY -= mouseDelta.Y / Zoom;
-        }
-
-        if (mState.ScrollWheelValue != _prevMouseState.ScrollWheelValue) {
-            int scrollDelta = mState.ScrollWheelValue - _prevMouseState.ScrollWheelValue;
-            _targetZoom += Math.Sign(scrollDelta) * 0.25f;
-            _targetZoom = MathHelper.Clamp(_targetZoom, _minZoom, _maxZoom);
-        }
-
-        float screenCenterX = GraphicsDevice.Viewport.Width / 2f;
-        float screenCenterY = GraphicsDevice.Viewport.Height / 2f;
-        var touchState = TouchPanel.GetState();
-        bool isPinching = touchState.Count >= 2;
-
-        if (isPinching) {
-            Vector2 firstPosition = touchState[0].Position;
-            Vector2 secondPosition = touchState[1].Position;
-            float pinchDistance = Vector2.Distance(firstPosition, secondPosition);
-            Vector2 pinchCenter = (firstPosition + secondPosition) / 2f;
-
-            if (_previousPinchDistance > 0f && pinchDistance > 0f) {
-                _targetZoom = MathHelper.Clamp(
-                    _targetZoom * pinchDistance / _previousPinchDistance,
-                    _minZoom,
-                    _maxZoom);
-            }
-
-            _previousPinchDistance = pinchDistance;
-            _previousTouchId = -1;
-
-            float previousZoom = Zoom;
-            Zoom = MathHelper.Lerp(Zoom, _targetZoom, 0.15f);
-            Vector2 centerOffset = pinchCenter - new Vector2(screenCenterX, screenCenterY);
-            WorldCameraX += centerOffset.X * (1f / previousZoom - 1f / Zoom);
-            WorldCameraY += centerOffset.Y * (1f / previousZoom - 1f / Zoom);
-            _mouseScreenPos = pinchCenter;
-        } else {
-            _previousPinchDistance = 0f;
-            if (touchState.Count == 1) {
-                var touch = touchState[0];
-                _mouseScreenPos = touch.Position;
-
-                if (touch.Id == _previousTouchId && touch.State == TouchLocationState.Moved) {
-                    Vector2 touchDelta = touch.Position - _previousTouchPosition;
-                    WorldCameraX -= touchDelta.X / Zoom;
-                    WorldCameraY -= touchDelta.Y / Zoom;
-                }
-
-                _previousTouchId = touch.Id;
-                _previousTouchPosition = touch.Position;
-            } else {
-                _previousTouchId = -1;
-                _mouseScreenPos = mState.Position.ToVector2();
-            }
-
-            Zoom = MathHelper.Lerp(Zoom, _targetZoom, 0.15f);
-        }
-
-        float maxMapX = MapWidth * TileSize;
-        float maxMapY = MapHeight * TileSize;
-        WorldCameraX = MathHelper.Clamp(WorldCameraX, 0f, maxMapX);
-        WorldCameraY = MathHelper.Clamp(WorldCameraY, 0f, maxMapY);
-
-        float mouseWorldX = (_mouseScreenPos.X - screenCenterX) / Zoom + WorldCameraX;
-        float mouseWorldY = (_mouseScreenPos.Y - screenCenterY) / Zoom + WorldCameraY;
-
-        int tileX = (int)Math.Floor(mouseWorldX / TileSize);
-        int tileY = (int)Math.Floor(mouseWorldY / TileSize);
-
-        if (tileX >= 0 && tileX < MapWidth && tileY >= 0 && tileY < MapHeight) {
-            _hoveredTile = new Point(tileX, tileY);
-        } else {
-            _hoveredTile = new Point(-1, -1);
-        }
     }
 
     protected override void Draw(GameTime gameTime) {
@@ -306,11 +215,8 @@ public class Main : Game {
             _spriteBatch.Draw(_pixelBackground, new Rectangle(10, 10, 460, 75), Color.Black * 0.6f);
             _spriteBatch.DrawString(_debugFont, fullDebugInfo, new Vector2(20, 15), Color.LimeGreen);
         }
-        #if !ANDROID
-        if (_cursorTexture != null) {
-            _spriteBatch.Draw(_cursorTexture, _mouseScreenPos, Color.White);
-        }
-        #endif
+
+        DrawPlatformCursor(_spriteBatch, _cursorTexture);
 
         _spriteBatch.End();
         base.Draw(gameTime);
