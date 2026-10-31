@@ -109,7 +109,6 @@ public class Main : Game {
     protected override void LoadContent() {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         FontRegistry.Initialize();
-        _debugFont = Content.Load<SpriteFont>("DebugFont");
 
         _specialTexture = Content.Load<Texture2D>("UMad");
         _grassTextures[1] = Content.Load<Texture2D>("Grass_1");

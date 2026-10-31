@@ -68,13 +68,5 @@ jobs:
       - name: Install .NET Android workload
         run: dotnet workload install android
 
-      - name: Prepare font for MonoGame content pipeline
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fontconfig fonts-liberation
-          font_path="$(fc-match -f '%{file}' Arial)"
-          test -f "$font_path"
-          cp "$font_path" ./desktop/Content/Arial.ttf
-
       - name: Build Android
         run: dotnet build ./android/android.csproj --configuration Release -p:AndroidSdkDirectory="$ANDROID_HOME" -m:1

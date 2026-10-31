@@ -24,4 +24,3 @@
 
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
-/build:../../core/Content/DebugFont.spritefont;DebugFont
