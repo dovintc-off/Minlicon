@@ -108,6 +108,7 @@ public class Main : Game {
 
     protected override void LoadContent() {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        FontRegistry.Initialize();
         _debugFont = Content.Load<SpriteFont>("DebugFont");
 
         _specialTexture = Content.Load<Texture2D>("UMad");
@@ -138,6 +139,14 @@ public class Main : Game {
             _prevMouseState = mState;
             _prevKeyboardState = kState;
             _tickAccumulator -= SimulationTickDuration;
+
+            _hoveredTile = new Point(
+                (int)Math.Floor(((_mouseScreenPos.X - GraphicsDevice.Viewport.Width / 2f) / Zoom + WorldCameraX) / TileSize),
+                (int)Math.Floor(((_mouseScreenPos.Y - GraphicsDevice.Viewport.Height / 2f) / Zoom + WorldCameraY) / TileSize)
+            );    
+
+            WorldCameraX = MathHelper.Clamp(WorldCameraX, 0f, MapWidth * TileSize);
+            WorldCameraY = MathHelper.Clamp(WorldCameraY, 0f, MapHeight * TileSize);
         }
 
         base.Update(gameTime);
@@ -201,19 +210,25 @@ public class Main : Game {
         // Interface
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
-        const int fpsBoxWidth = 90;
-        int fpsBoxX = GraphicsDevice.Viewport.Width - fpsBoxWidth - 12;
-        _spriteBatch.Draw(_pixelBackground!, new Rectangle(fpsBoxX, 12, fpsBoxWidth, 32), Color.Black * 0.65f);
-        if (_debugFont != null) {
-            _spriteBatch.DrawString(_debugFont, _fpsText, new Vector2(fpsBoxX + 8, 18), Color.LimeGreen);
-        }
+        int fpsBoxX = GraphicsDevice.Viewport.Width - (20 + (int)FontRegistry.Get(Font.Medeo, 28).MeasureString(_fpsText).X);
 
-        if (_showDebug && _debugFont != null && _pixelBackground != null) {
+        _spriteBatch.Draw(_pixelBackground!, 
+            // x y w h 
+            new Rectangle(fpsBoxX, 12, 
+                (int)Math.Ceiling(FontRegistry.Get(Font.Medeo, 28).MeasureString(_fpsText).X) + 12,
+                (int)Math.Ceiling(FontRegistry.Get(Font.Medeo, 28).MeasureString(_fpsText).Y) + 12
+            ), Color.Black * 0.65f);
+
+        _spriteBatch.DrawText(Font.Medeo, 28, _fpsText, new Vector2(fpsBoxX + 6, 18), Color.LimeGreen);
+
+        _spriteBatch.DrawText(Font.Medeo, 30, FontRegistry.Get(Font.Medeo, 28).MeasureString(_fpsText).X.ToString(), new Vector2(0, 0), Color.Black);
+        
+        if (_showDebug && _pixelBackground != null) {
             string camText = $"Camera Pos: X:{Math.Round(WorldCameraX)}, Y:{Math.Round(WorldCameraY)} | Zoom: {Math.Round(Zoom, 2)}";
             string mouseText = $"Cursor Tile: X:{_hoveredTile.X}, Y:{_hoveredTile.Y}";
             string fullDebugInfo = $"{camText}\n{mouseText}";
             _spriteBatch.Draw(_pixelBackground, new Rectangle(10, 10, 460, 75), Color.Black * 0.6f);
-            _spriteBatch.DrawString(_debugFont, fullDebugInfo, new Vector2(20, 15), Color.LimeGreen);
+            _spriteBatch.DrawText(Font.Medeo, 28, fullDebugInfo, new Vector2(20, 15), Color.LimeGreen);
         }
 
         DrawPlatformCursor(_spriteBatch, _cursorTexture);

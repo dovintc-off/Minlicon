@@ -14,5 +14,6 @@
 *.aab
 *.idsig
 
-# Local logs
+# Local files
 *.log
+/.txt

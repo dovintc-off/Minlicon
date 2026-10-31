@@ -63,3 +63,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution and validation workf
 ## License
 
 This project is distributed under the GNU General Public License, version 3. See [LICENSE](LICENSE).
+
+# Third-party assets
+
+The source code of this game is distributed under the GNU GPLv3 license. 
+However, the font files in the `Core/Content/fonts/` (Medeo) folder are the intellectual property of their authors and are distributed under their own free license SIL Open Font License 1.1. The text of the font license is in the file [OFL.txt](Core/Content/fonts/OFL.txt)

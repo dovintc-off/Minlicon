@@ -9,4 +9,14 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" Condition="'$(TargetFramework)' == 'net9.0'" />
     <PackageReference Include="MonoGame.Framework.Android" Version="3.8.*" Condition="'$(TargetFramework)' == 'net9.0-android'" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Content\fonts\MedeoSans-Black.ttf">
+      <LogicalName>Minlicon.Fonts.MedeoSans-Black.ttf</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
