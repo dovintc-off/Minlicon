@@ -4,4 +4,5 @@
   </Folder>
   <Project Path="android/android.csproj" />
   <Project Path="desktop/desktop.csproj" />
+  <Project Path="tests/tests.csproj" />
 </Solution>
