@@ -26,6 +26,25 @@ public class Activity1 : AndroidGameActivity {
         _view = _game.Services.GetService(typeof(View)) as View;
 
         SetContentView(_view);
+        HideSystemBars();
         _game.Run();
+    }
+
+    private void HideSystemBars() {
+        var flags = SystemUiFlags.HideNavigation
+                | SystemUiFlags.Fullscreen
+                | SystemUiFlags.ImmersiveSticky
+                | SystemUiFlags.LayoutStable
+                | SystemUiFlags.LayoutHideNavigation
+                | SystemUiFlags.LayoutFullscreen;
+
+        Window.DecorView.SystemUiVisibility = (StatusBarVisibility)flags;
+    }
+
+    public override void OnWindowFocusChanged(bool hasFocus) {
+        base.OnWindowFocusChanged(hasFocus);
+
+        if (hasFocus)
+            HideSystemBars();
     }
 }
