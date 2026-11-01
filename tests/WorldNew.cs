@@ -11,11 +11,11 @@ public class UnitTest1 {
     [Fact]
     public void NewWorld_InitializesAllCells() {
         TileSystem world = new TileSystem(100, 100);
-        // world.Set(10, 10, new TileCell(TileDefinition.Umad, 0));
+
         TileCell TestTile = world.Get(10, 10);
-        Assert.Equal(TileDefinition.Umad, TestTile.TileType);
-        Assert.Equal((byte)0, TestTile.Rotate);
+    
+        Assert.Equal(TileGround.Grass, world.Get(10, 10).TileGroundType);
+
         output.WriteLine(TestTile.ToString());
-        output.WriteLine(TestTile.Rotate.ToString());
     }
 }

@@ -16,4 +16,4 @@
 
 # Local files
 *.log
-/.txt
+*.txt
