@@ -1,0 +1,9 @@
+{
+    "Name": "Grass",
+    "Type": "Ground",
+    "Drawer": {},
+    "RandomDrawer": {
+        "Textures": ["grass-1.png", "grass-2.png", "grass-3.png", "grass-4.png"],
+        "Rotates": [0, 90, 180, 270]
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "Name": "DrillLevelOne",
+    "MaxHealth": 100,
+    "Type": "Building",
+    "Description": "Drill is a factory that can extract resources from the ground.",
+    "StandOn": "Ground.IroneOre",
+    "OutputPoint": "everywhere",
+    "Width": 32,
+    "Height": 32,
+    "Rotateble": true,
+    "Drawer": {
+        "Layers": [
+            {
+                "Order": 1,
+                "Image": "drill_base.png"
+            }, {
+                "Order": 2,
+                "Image": "drill_top.png",
+                "Rotation": {
+                    "Pivot": "TextureCenter",
+                    "Direction": "Clockwise",
+                    "Speed": 4
+                }
+            }
+        ]
+    }
+}
