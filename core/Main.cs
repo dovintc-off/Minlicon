@@ -111,10 +111,10 @@ public class Main : Game {
         FontRegistry.Initialize();
 
         _specialTexture = Content.Load<Texture2D>("UMad");
-        _grassTextures[1] = Content.Load<Texture2D>("Grass_1");
-        _grassTextures[2] = Content.Load<Texture2D>("Grass_2");
-        _grassTextures[3] = Content.Load<Texture2D>("Grass_3");
-        _grassTextures[4] = Content.Load<Texture2D>("Grass_4");
+        _grassTextures[1] = Content.Load<Texture2D>("Grass-1");
+        _grassTextures[2] = Content.Load<Texture2D>("Grass-2");
+        _grassTextures[3] = Content.Load<Texture2D>("Grass-3");
+        _grassTextures[4] = Content.Load<Texture2D>("Grass-4");
         _cursorTexture = Content.Load<Texture2D>("Cursor");
     }
 
@@ -219,8 +219,6 @@ public class Main : Game {
             ), Color.Black * 0.65f);
 
         _spriteBatch.DrawText(Font.Medeo, 28, _fpsText, new Vector2(fpsBoxX + 6, 18), Color.LimeGreen);
-
-        _spriteBatch.DrawText(Font.Medeo, 30, FontRegistry.Get(Font.Medeo, 28).MeasureString(_fpsText).X.ToString(), new Vector2(0, 0), Color.Black);
         
         if (_showDebug && _pixelBackground != null) {
             string camText = $"Camera Pos: X:{Math.Round(WorldCameraX)}, Y:{Math.Round(WorldCameraY)} | Zoom: {Math.Round(Zoom, 2)}";
@@ -230,7 +228,7 @@ public class Main : Game {
             _spriteBatch.DrawText(Font.Medeo, 28, fullDebugInfo, new Vector2(20, 15), Color.LimeGreen);
         }
 
-        DrawPlatformCursor(_spriteBatch, _cursorTexture);
+        DrawPlatformCursor(_spriteBatch, _cursorTexture!);
 
         _spriteBatch.End();
         base.Draw(gameTime);

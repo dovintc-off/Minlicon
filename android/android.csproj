@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-android</TargetFramework>
-    <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
     <OutputType>Exe</OutputType>
     <ApplicationId>Minlicon.Android.Minlicon.Android</ApplicationId>
-    <ApplicationVersion>2</ApplicationVersion>
-    <ApplicationDisplayVersion>alpha 0.2</ApplicationDisplayVersion>
+    <ApplicationVersion>0.2</ApplicationVersion>
+    <ApplicationDisplayVersion>0.2.0-alpha</ApplicationDisplayVersion>
     <AndroidEnableFastDeployment Condition="'$(Configuration)' == 'Debug'">false</AndroidEnableFastDeployment>
   </PropertyGroup>
   <ItemGroup>
