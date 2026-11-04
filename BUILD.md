@@ -36,8 +36,8 @@ Run the following commands from PowerShell in the project root:
 
 ```powershell
 # 1. Set paths to Android SDK and ADB tool
-sdk = "env:LOCALAPPDATA\Android\Sdk"
-adb = Join-Path sdk "platform-tools\adb.exe"
+$sdk = "env:LOCALAPPDATA\Android\Sdk"
+$adb = Join-Path sdk "platform-tools\adb.exe"
 
 # 2. Build the signed Release APK
 dotnet build .\android\android.csproj -c Release "-p:AndroidSdkDirectory=\$sdk" -m:1

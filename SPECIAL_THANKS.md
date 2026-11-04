@@ -2,4 +2,4 @@
 ## Android Testers 
 > **Nost**
 ## PC Testers
-> **Кошкоегор**, **StReLoCk**
+> **Кошкоегор**, **StReLoCk**, **MiRoz**
