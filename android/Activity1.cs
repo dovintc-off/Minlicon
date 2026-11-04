@@ -37,8 +37,9 @@ public class Activity1 : AndroidGameActivity {
                 | SystemUiFlags.LayoutStable
                 | SystemUiFlags.LayoutHideNavigation
                 | SystemUiFlags.LayoutFullscreen;
-
+#pragma warning disable CS0618
         Window.DecorView.SystemUiVisibility = (StatusBarVisibility)flags;
+#pragma warning restore CS0618
     }
 
     public override void OnWindowFocusChanged(bool hasFocus) {
