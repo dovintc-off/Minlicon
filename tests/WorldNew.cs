@@ -1,6 +1,7 @@
 ﻿namespace tests;
 
 using Minlicon.Core.TileSystem;
+using Xunit;
 using Xunit.Abstractions;
 
 public class UnitTest1 {
@@ -10,12 +11,18 @@ public class UnitTest1 {
 
     [Fact]
     public void NewWorld_InitializesAllCells() {
-        TileSystem world = new TileSystem(100, 100);
+        GroundDefinition defaultGround = new GroundDefinition {
+            Name = "Grass",
+            CanBuild = true
+        };
 
-        TileCell TestTile = world.Get(10, 10);
-    
-        Assert.Equal(TileGround.Grass, world.Get(10, 10).TileGroundType);
+        TileSystem world = new TileSystem(100, defaultGround);
 
-        output.WriteLine(TestTile.ToString());
+        TileCell testTile = world.Get(10, 10);
+
+        Assert.Same(defaultGround, testTile.Ground);
+        Assert.Null(testTile.Building);
+
+        output.WriteLine(testTile.ToString());
     }
 }

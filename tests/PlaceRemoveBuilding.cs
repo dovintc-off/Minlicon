@@ -1,16 +1,19 @@
 namespace tests;
 
 using Minlicon.Core.TileSystem;
-using Xunit.Abstractions;
+using Xunit;
 
 public class UnitTest2 {
-    private readonly ITestOutputHelper output;
-
-    public UnitTest2(ITestOutputHelper output) => this.output = output;
+    private static GroundDefinition CreateGround() {
+        return new GroundDefinition {
+            Name = "Grass",
+            CanBuild = true
+        };
+    }
 
     [Fact]
     public void PlaceBuilding_Success() {
-        TileSystem world = new TileSystem(100, 100);
+        TileSystem world = new TileSystem(100, CreateGround());
 
         BuildingInstance building = new BuildingInstance(
             new BuildingDefinition("drill", 2, 2, 100),
@@ -27,7 +30,7 @@ public class UnitTest2 {
 
     [Fact]
     public void PlaceBuilding_Occupied() {
-        TileSystem world = new TileSystem(100, 100);
+        TileSystem world = new TileSystem(100, CreateGround());
 
         BuildingInstance first = new BuildingInstance(
             new BuildingDefinition("drill", 2, 2, 100),
@@ -47,14 +50,14 @@ public class UnitTest2 {
 
     [Fact]
     public void CanRemove_ValidBuilding() {
-        TileSystem world = new TileSystem(100, 100);
+        TileSystem world = new TileSystem(100, CreateGround());
 
         BuildingInstance building = new BuildingInstance(
             new BuildingDefinition("drill", 2, 2, 100),
             10, 10
         );
 
-        world.PlaceBuilding(building);
+        Assert.True(world.PlaceBuilding(building));
 
         Assert.True(world.CanRemove(10, 10));
         Assert.True(world.CanRemove(11, 11));
@@ -62,7 +65,7 @@ public class UnitTest2 {
 
     [Fact]
     public void RemoveBuilding_Success() {
-        TileSystem world = new TileSystem(100, 100);
+        TileSystem world = new TileSystem(100, CreateGround());
 
         BuildingInstance building = new BuildingInstance(
             new BuildingDefinition("drill", 2, 2, 100),
@@ -80,9 +83,9 @@ public class UnitTest2 {
 
     [Fact]
     public void RemoveBuilding_PreservesGround() {
-        TileSystem world = new TileSystem(100, 100);
+        TileSystem world = new TileSystem(100, CreateGround());
 
-        TileGround ground = world.Get(10, 10).TileGroundType;
+        GroundDefinition ground = world.Get(10, 10).Ground;
 
         BuildingInstance building = new BuildingInstance(
             new BuildingDefinition("drill", 2, 2, 100),
@@ -92,7 +95,7 @@ public class UnitTest2 {
         Assert.True(world.PlaceBuilding(building));
         Assert.True(world.RemoveBuilding(10, 10));
 
-        Assert.Equal(ground, world.Get(10, 10).TileGroundType);
+        Assert.Same(ground, world.Get(10, 10).Ground);
         Assert.Null(world.Get(10, 10).Building);
     }
 }
