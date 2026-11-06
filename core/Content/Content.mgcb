@@ -13,12 +13,37 @@
 
 /importer:TextureImporter
 /processor:TextureProcessor
-/build:Cursor.png
-/build:Grass-1.png
-/build:Grass-2.png
-/build:Grass-3.png
-/build:Grass-4.png
-/build:UMad.png
-
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+
+#begin UMad.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:UMad.png
+
+#-------------------------------- Generated ---------------------------------#
+#begin assets-raw/Grass-1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:assets-raw/Grass-1.png
+
+#begin assets-raw/Grass-2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:assets-raw/Grass-2.png
+
+#begin assets-raw/Grass-3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:assets-raw/Grass-3.png
+
+#begin assets-raw/Grass-4.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:assets-raw/Grass-4.png
+
+#begin assets/Cursor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:assets/Cursor.png
+

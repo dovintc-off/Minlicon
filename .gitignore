@@ -1,6 +1,7 @@
 # .NET build outputs
 **/bin/
 **/obj/
+**.config/
 
 # IDE and user-specific files
 .vs/
@@ -17,3 +18,5 @@
 # Local files
 *.log
 *.txt
+*.mgstats
+/dotnet-tools.json

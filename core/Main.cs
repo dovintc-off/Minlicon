@@ -71,7 +71,7 @@ public class Main : Game {
     protected virtual void ConfigurePlatformGraphics() {}
     // Input
     protected virtual void HandlePlatformInput(KeyboardState kState, MouseState mState) {}
-    // Cursor
+    // かーそる (ka-soru)
     protected virtual void DrawPlatformCursor(SpriteBatch spriteBatch, Texture2D cursorTexture) {}
 
     protected override void Initialize() {
@@ -111,11 +111,11 @@ public class Main : Game {
         FontRegistry.Initialize();
 
         _specialTexture = Content.Load<Texture2D>("UMad");
-        _grassTextures[1] = Content.Load<Texture2D>("Grass-1");
-        _grassTextures[2] = Content.Load<Texture2D>("Grass-2");
-        _grassTextures[3] = Content.Load<Texture2D>("Grass-3");
-        _grassTextures[4] = Content.Load<Texture2D>("Grass-4");
-        _cursorTexture = Content.Load<Texture2D>("Cursor");
+        _grassTextures[1] = Content.Load<Texture2D>("assets-raw/Grass-1");
+        _grassTextures[2] = Content.Load<Texture2D>("assets-raw/Grass-2");
+        _grassTextures[3] = Content.Load<Texture2D>("assets-raw/Grass-3");
+        _grassTextures[4] = Content.Load<Texture2D>("assets-raw/Grass-4");
+        _cursorTexture = Content.Load<Texture2D>("assets/Cursor");
     }
 
     protected override void Update(GameTime gameTime) {

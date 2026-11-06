@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 public static class FontRegistry {
     private static readonly object SyncRoot = new();
     private static readonly IReadOnlyDictionary<Font, string> FontResources = new Dictionary<Font, string> {
-        [Font.Medeo] = "Minlicon.Fonts.MedeoSans-Black.ttf"
+        [Font.Medeo] = "Minlicon.assets.fonts.MedeoSans-Black.ttf"
     };
     private static readonly Dictionary<Font, FontSystem> FontSystems = new();
     private static readonly Dictionary<(Font Font, int Size), SpriteFontBase> FontCache = new();

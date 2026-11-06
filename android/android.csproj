@@ -15,4 +15,10 @@
   <ItemGroup>
     <ProjectReference Include="..\core\core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="..\core\Content\assets\data\**\*.json" Link="assets/data/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <Target Name="GenerateMGCB" BeforeTargets="RunContentBuilder">
+      <Exec Command="python &quot;$(MSBuildThisFileDirectory)../core/tools/GenerateMGCB.py&quot;" />
+  </Target>
 </Project>

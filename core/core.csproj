@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Content\fonts\MedeoSans-Black.ttf">
-      <LogicalName>Minlicon.Fonts.MedeoSans-Black.ttf</LogicalName>
+    <EmbeddedResource Include="Content\assets\fonts\MedeoSans-Black.ttf">
+      <LogicalName>Minlicon.assets.fonts.MedeoSans-Black.ttf</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 </Project>
