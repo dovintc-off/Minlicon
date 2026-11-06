@@ -71,7 +71,7 @@ public class Main : Game {
     protected virtual void ConfigurePlatformGraphics() {}
     // Input
     protected virtual void HandlePlatformInput(KeyboardState kState, MouseState mState) {}
-    // かーそる (ka-soru)
+    // Cursor
     protected virtual void DrawPlatformCursor(SpriteBatch spriteBatch, Texture2D cursorTexture) {}
 
     protected override void Initialize() {

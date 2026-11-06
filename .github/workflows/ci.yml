@@ -20,7 +20,12 @@ jobs:
       - name: Install .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Restore .NET tools
+        run: dotnet tool restore
 
       - name: Run test projects, if present
         shell: pwsh
@@ -49,7 +54,12 @@ jobs:
       - name: Install .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Restore .NET tools
+        run: dotnet tool restore
 
       - name: Install Java
         uses: actions/setup-java@v4

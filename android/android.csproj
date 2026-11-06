@@ -14,11 +14,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.csproj" />
+    <MonoGameContentReference Include="..\core\Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="..\core\Content\assets\data\**\*.json" Link="assets/data/%(RecursiveDir)%(Filename)%(Extension)" />
+    <AndroidAsset Include="..\core\Content\json\**\*.json"
+                  Link="assets/data/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <Target Name="GenerateMGCB" BeforeTargets="RunContentBuilder">
-      <Exec Command="python &quot;$(MSBuildThisFileDirectory)../core/tools/GenerateMGCB.py&quot;" />
+    <Exec Command="python &quot;$(MSBuildThisFileDirectory)../core/tools/GenerateMGCB.py&quot;" />
   </Target>
 </Project>
