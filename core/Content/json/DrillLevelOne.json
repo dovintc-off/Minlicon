@@ -1,7 +1,7 @@
 {
     "Name": "DrillLevelOne",
     "MaxHealth": 100,
-    "Type": "Building",
+    "Type": "Building1",
     "Description": "Drill is a factory that can extract resources from the ground.",
     "StandOn": "Ground.IroneOre",
     "OutputPoint": "everywhere",

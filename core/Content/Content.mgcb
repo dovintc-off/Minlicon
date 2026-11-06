@@ -21,6 +21,9 @@
 /processor:TextureProcessor
 /build:UMad.png
 
+#begin index.txt
+/copy:index.txt
+
 #-------------------------------- Generated ---------------------------------#
 #begin assets-raw/Grass-1.png
 /importer:TextureImporter

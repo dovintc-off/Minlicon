@@ -17,7 +17,7 @@
     <MonoGameContentReference Include="..\core\Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="..\core\Content\json\**\*.json"
+    <AndroidAsset Include="..\core\Content\assets\json\**\*.json"
                   Link="assets/data/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <Target Name="GenerateMGCB" BeforeTargets="RunContentBuilder">

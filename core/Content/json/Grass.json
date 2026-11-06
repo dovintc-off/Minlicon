@@ -3,7 +3,7 @@
     "Type": "Ground",
     "Drawer": {},
     "RandomDrawer": {
-        "Textures": ["grass-1.png", "grass-2.png", "grass-3.png", "grass-4.png"],
-        "Rotates": [0, 90, 180, 270]
+        "Textures": ["assets-raw/Grass-1", "assets-raw/Grass-2", "assets-raw/Grass-3", "assets-raw/Grass-4"],
+        "Rotates": [0]
     }
 }

@@ -13,7 +13,7 @@ To build and launch the desktop version, open PowerShell in the project root dir
 dotnet build .\desktop\desktop.csproj -c Release
 
 # Run the desktop application
-dotnet run --project .\desktop\desktop.csproj -c Release
+dotnet run --project .\desktop\desktop.csproj -configuration Release --no-build *> output.log
 ```
 
 The compiled binaries will be available in: `.\desktop\bin\Release\net9.0\`

@@ -2,10 +2,12 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
+using Minlicon.Core.TileSystem;
 
 public enum Grounds {
     Grass = 1,
@@ -20,10 +22,10 @@ public class Main : Game {
     protected const int MapHeight = 100;
     protected const int TileSize = 32;
 
-    protected readonly int[,,] GLayer = new int[MapWidth, MapHeight, 3];
-    protected int[,] BLayer = new int[MapWidth, MapHeight];
-    protected readonly Texture2D?[] _grassTextures = new Texture2D?[5];
-    protected Texture2D? _specialTexture;
+    protected TileSystem.TileSystem _tileSystem = null!;
+    protected TileRegistry _tileRegistry = null!;
+    protected AtlasGenerator.AtlasType _globalAtlas = null!;
+    protected WorldDrawer _worldDrawer = null!;
 
     protected float WorldCameraX = 0f;
     protected float WorldCameraY = 0f;
@@ -52,8 +54,8 @@ public class Main : Game {
     protected MouseState _prevMouseState;
     protected KeyboardState _prevKeyboardState;
     protected int _previousTouchId = -1;
-    protected  Vector2 _previousTouchPosition;
-    protected  float _previousPinchDistance;
+    protected Vector2 _previousTouchPosition;
+    protected float _previousPinchDistance;
 
     public Main() {
         _graphics = new GraphicsDeviceManager(this);
@@ -74,28 +76,18 @@ public class Main : Game {
     // Cursor
     protected virtual void DrawPlatformCursor(SpriteBatch spriteBatch, Texture2D cursorTexture) {}
 
+    protected virtual Dictionary<string, string> LoadRegistryData() { return new Dictionary<string, string>(); }
+
     protected override void Initialize() {
-        
         ConfigurePlatformGraphics();
         _graphics.ApplyChanges();
 
         TouchPanel.EnabledGestures = GestureType.Tap | GestureType.Pinch;
 
-        Random rng = new Random();
-        int[] customAngles = { 0, 90, 180, 270 };
-
-        for (int i = 0; i < MapWidth; i++) {
-            for (int j = 0; j < MapHeight; j++) {
-                GLayer[i, j, 0] = (int)Grounds.Grass;
-                GLayer[i, j, 1] = rng.Next(1, 5);
-                GLayer[i, j, 2] = customAngles[rng.Next(customAngles.Length)];
-            }
-        }
-
-        GLayer[50, 50, 0] = -1;
         _prevMouseState = Mouse.GetState();
         _prevKeyboardState = Keyboard.GetState();
         _fpsWindowStartTimestamp = Stopwatch.GetTimestamp();
+
 
         WorldCameraX = (MapWidth * TileSize) / 2f;
         WorldCameraY = (MapHeight * TileSize) / 2f;
@@ -110,11 +102,15 @@ public class Main : Game {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         FontRegistry.Initialize();
 
-        _specialTexture = Content.Load<Texture2D>("UMad");
-        _grassTextures[1] = Content.Load<Texture2D>("assets-raw/Grass-1");
-        _grassTextures[2] = Content.Load<Texture2D>("assets-raw/Grass-2");
-        _grassTextures[3] = Content.Load<Texture2D>("assets-raw/Grass-3");
-        _grassTextures[4] = Content.Load<Texture2D>("assets-raw/Grass-4");
+        Dictionary<string, string> rawJsonData = LoadRegistryData();
+        _tileRegistry = new TileRegistry(rawJsonData);
+        AtlasGenerator atlasGenerator = new AtlasGenerator(Content, GraphicsDevice);
+        atlasGenerator.BakeRegistry(_tileRegistry);
+        _globalAtlas = atlasGenerator.GetAtlas();
+        _worldDrawer = new WorldDrawer(_spriteBatch, _tileSystem, _globalAtlas, _tileRegistry, TileSize);
+        _tileRegistry = new TileRegistry(rawJsonData);
+        GroundDefinition defaultGround = _tileRegistry.Grounds["Grass"];
+        _tileSystem = new TileSystem.TileSystem(MapWidth, MapHeight, defaultGround);
         _cursorTexture = Content.Load<Texture2D>("assets/Cursor");
     }
 
@@ -155,7 +151,7 @@ public class Main : Game {
         UpdateRenderedFps();
         GraphicsDevice.Clear(Color.Black);
 
-        if (_spriteBatch == null) {
+        if (_spriteBatch == null || _worldDrawer == null) {
             base.Draw(gameTime);
             return;
         }
@@ -168,51 +164,15 @@ public class Main : Game {
                              Matrix.CreateTranslation(new Vector3(screenCenterX, screenCenterY, 0));
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, cameraMatrix);
-
-        float halfViewWidth = screenCenterX / Zoom;
-        float halfViewHeight = screenCenterY / Zoom;
-        int minTileX = Math.Max(0, (int)Math.Floor((WorldCameraX - halfViewWidth) / TileSize));
-        int maxTileX = Math.Min(MapWidth - 1, (int)Math.Floor((WorldCameraX + halfViewWidth) / TileSize));
-        int minTileY = Math.Max(0, (int)Math.Floor((WorldCameraY - halfViewHeight) / TileSize));
-        int maxTileY = Math.Min(MapHeight - 1, (int)Math.Floor((WorldCameraY + halfViewHeight) / TileSize));
-
-        for (int i = minTileX; i <= maxTileX; i++) {
-            for (int j = minTileY; j <= maxTileY; j++) {
-                int groundType = GLayer[i, j, 0];
-                int textureVariant = GLayer[i, j, 1];
-                int currentAngleDegrees = GLayer[i, j, 2];
-                Texture2D? texture = groundType == (int)Grounds.UMad
-                    ? _specialTexture
-                    : textureVariant >= 1 && textureVariant < _grassTextures.Length
-                        ? _grassTextures[textureVariant]
-                        : null;
-
-                if (texture != null) {
-                    Vector2 tilePos = new Vector2(i * TileSize, j * TileSize);
-                    Color tileColor = (i == _hoveredTile.X && j == _hoveredTile.Y) ? new Color(255, 255, 200) : Color.White;
-
-                    if (groundType == (int)Grounds.Grass) {
-                        Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
-                        Vector2 tileCenterPosition = tilePos + new Vector2(TileSize / 2f, TileSize / 2f);
-                        float radians = MathHelper.ToRadians(currentAngleDegrees);
-
-                        _spriteBatch.Draw(texture, tileCenterPosition, null, tileColor, radians, origin, 1f, SpriteEffects.None, 0f);
-                    } else {
-                        _spriteBatch.Draw(texture, tilePos, tileColor);
-                    }
-                }
-            }
-        }
+        _worldDrawer.Draw(WorldCameraX, WorldCameraY, Zoom, GraphicsDevice.Viewport, _hoveredTile);
 
         _spriteBatch.End();
 
-        // Interface
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
         int fpsBoxX = GraphicsDevice.Viewport.Width - (20 + (int)FontRegistry.Get(Font.Medeo, 28).MeasureString(_fpsText).X);
 
         _spriteBatch.Draw(_pixelBackground!, 
-            // x y w h 
             new Rectangle(fpsBoxX, 12, 
                 (int)Math.Ceiling(FontRegistry.Get(Font.Medeo, 28).MeasureString(_fpsText).X) + 12,
                 (int)Math.Ceiling(FontRegistry.Get(Font.Medeo, 28).MeasureString(_fpsText).Y) + 12

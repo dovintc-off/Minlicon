@@ -33,9 +33,9 @@
     <MonoGameContentReference Include="..\core\Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\core\Content\assets\data\**\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>assets/data/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    <Content Include="..\core\Content\json\**\*.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <TargetPath>Content\json\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </Content>
   </ItemGroup>
   <Target Name="GenerateMGCB" BeforeTargets="RunContentBuilder">
