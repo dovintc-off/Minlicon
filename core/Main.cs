@@ -68,7 +68,6 @@ public class Main : Game {
         Content.RootDirectory = "Content";
         IsMouseVisible = false;
     }
-
     // Dynamic adaptation
     protected virtual void ConfigurePlatformGraphics() {}
     // Input
@@ -106,6 +105,7 @@ public class Main : Game {
         _tileRegistry = new TileRegistry(rawJsonData);
         AtlasGenerator atlasGenerator = new AtlasGenerator(Content, GraphicsDevice);
         atlasGenerator.BakeRegistry(_tileRegistry);
+        atlasGenerator.SaveAtlas("atlas.png");
         _globalAtlas = atlasGenerator.GetAtlas();
         _worldDrawer = new WorldDrawer(_spriteBatch, _tileSystem, _globalAtlas, _tileRegistry, TileSize);
         _tileRegistry = new TileRegistry(rawJsonData);
@@ -117,6 +117,8 @@ public class Main : Game {
     protected override void Update(GameTime gameTime) {
         var kState = Keyboard.GetState();
         var mState = Mouse.GetState();
+
+        HandlePlatformInput(kState, mState);
 
         if (kState.IsKeyDown(Keys.Escape))
             Exit();
@@ -130,7 +132,6 @@ public class Main : Game {
                 _showDebug = !_showDebug;
             }
 
-            HandlePlatformInput(kState, mState);
             _prevMouseState = mState;
             _prevKeyboardState = kState;
             _tickAccumulator -= SimulationTickDuration;

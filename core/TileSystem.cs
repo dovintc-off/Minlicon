@@ -419,6 +419,24 @@ public class AtlasGenerator {
         return _atlas;
     }
 
+    public void SaveAtlas(string path) {
+        if (Atlas?.AtlasTexture == null)
+            throw new InvalidOperationException("Atlas texture is null.");
+
+        string? directory = Path.GetDirectoryName(path);
+
+        if (!string.IsNullOrEmpty(directory))
+            Directory.CreateDirectory(directory);
+
+        using FileStream stream = File.Create(path);
+
+        Atlas.AtlasTexture.SaveAsPng(
+            stream,
+            Atlas.AtlasTexture.Width,
+            Atlas.AtlasTexture.Height
+        );
+    }
+
     public void BakeRegistry(TileRegistry registry) {
         if (this.Atlas == null || this.Atlas.Regions == null) return;
 
