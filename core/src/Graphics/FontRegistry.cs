@@ -1,6 +1,4 @@
-// Copyright (C) 2026 Dovintc
-// This project is licensed under the GNU General Public License, version 3.0 only.
-// The full license text is available at: https://www.gnu.org/licenses/gpl-3.0.txt
+namespace Minlicon.Core.Graphics;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
