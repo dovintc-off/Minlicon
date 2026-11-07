@@ -38,10 +38,13 @@ public class MainDesktop : Main {
         }
         return result;
     }
+    protected override void HandlePlatformInput(GameTime gameTime, KeyboardState kState, MouseState mState){
+        // Базовая скорость (пикселей в секунду)
+        float baseSpeed = 400f; 
+        if (kState.IsKeyDown(Keys.LeftShift) || kState.IsKeyDown(Keys.RightShift)) baseSpeed *= 2.5f;
 
-    protected override void HandlePlatformInput(KeyboardState kState, MouseState mState){
-        float cameraSpeed = 8f;
-        if (kState.IsKeyDown(Keys.LeftShift) || kState.IsKeyDown(Keys.RightShift)) cameraSpeed *= 2.5f;
+        // Чем ближе камера (больше Zoom), тем медленнее она ползет
+        float cameraSpeed = baseSpeed * (1f / Zoom) * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         if (kState.IsKeyDown(Keys.A)) WorldCameraX -= cameraSpeed;
         if (kState.IsKeyDown(Keys.D)) WorldCameraX += cameraSpeed;
@@ -50,11 +53,11 @@ public class MainDesktop : Main {
 
         if (mState.ScrollWheelValue != _prevMouseState.ScrollWheelValue) {
             int scrollDelta = mState.ScrollWheelValue - _prevMouseState.ScrollWheelValue;
-            _targetZoom += Math.Sign(scrollDelta) * 0.25f;
+            _targetZoom += Math.Sign(scrollDelta) * 0.15f;
             _targetZoom = MathHelper.Clamp(_targetZoom, _minZoom, _maxZoom);
         }
 
-        Zoom = MathHelper.Lerp(Zoom, _targetZoom, 0.15f);
+        // за плавность теперь отвечает ядро
         _mouseScreenPos = mState.Position.ToVector2();
     }
 

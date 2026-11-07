@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Minlicon.Core.TileSystem;
@@ -36,9 +34,7 @@ public partial class Main : Game {
         _graphics = new GraphicsDeviceManager(this);
         IsFixedTimeStep = false;
         TargetElapsedTime = TimeSpan.FromSeconds(SimulationTickDuration);
-#if !ANDROID
-        _graphics.SynchronizeWithVerticalRetrace = false;
-#endif
+        _graphics.SynchronizeWithVerticalRetrace = true;
         Content.RootDirectory = "Content";
         IsMouseVisible = false;
     }

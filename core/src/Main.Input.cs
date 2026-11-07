@@ -19,7 +19,7 @@ public partial class Main {
     protected float _previousPinchDistance;
 
     protected virtual void ConfigurePlatformGraphics() {}
-    protected virtual void HandlePlatformInput(KeyboardState kState, MouseState mState) {}
+    protected virtual void HandlePlatformInput(GameTime gameTime, KeyboardState kState, MouseState mState) {}
     protected virtual Dictionary<string, string> LoadRegistryData() { return new Dictionary<string, string>(); }
 
     protected void InitializeInput() {
@@ -32,12 +32,12 @@ public partial class Main {
         var kState = Keyboard.GetState();
         var mState = Mouse.GetState();
 
-        HandlePlatformInput(kState, mState);
+        // gameTime для независимости от FPS
+        HandlePlatformInput(gameTime, kState, mState);
 
         if (kState.IsKeyDown(Keys.Escape))
             Exit();
 
-        // Плавный расчет зума на основе дельты времени (DeltaTime)
         float lerpSpeed = 10f * (float)gameTime.ElapsedGameTime.TotalSeconds;
         Zoom = MathHelper.Lerp(Zoom, _targetZoom, MathHelper.Clamp(lerpSpeed, 0f, 1f));
 
@@ -58,9 +58,9 @@ public partial class Main {
                 (int)Math.Floor(((_mouseScreenPos.X - GraphicsDevice.Viewport.Width / 2f) / Zoom + WorldCameraX) / TileSize),
                 (int)Math.Floor(((_mouseScreenPos.Y - GraphicsDevice.Viewport.Height / 2f) / Zoom + WorldCameraY) / TileSize)
             );    
-
-            WorldCameraX = MathHelper.Clamp(WorldCameraX, 0f, MapWidth * TileSize);
-            WorldCameraY = MathHelper.Clamp(WorldCameraY, 0f, MapHeight * TileSize);
         }
+
+        WorldCameraX = MathHelper.Clamp(WorldCameraX, 0f, MapWidth * TileSize);
+        WorldCameraY = MathHelper.Clamp(WorldCameraY, 0f, MapHeight * TileSize);
     }
 }
