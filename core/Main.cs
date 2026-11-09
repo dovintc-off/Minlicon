@@ -72,6 +72,13 @@ public partial class Main : Game {
         
         _worldDrawer = new WorldDrawer(_spriteBatch, _tileSystem, _globalAtlas, _tileRegistry, TileSize);
         _cursorTexture = Content.Load<Texture2D>("assets/Cursor");
+
+        for (int i = 1; i<MapWidth; i++){
+            _tileSystem.Set(i, 0, new TileCell(_tileRegistry.Grounds["Sand"], null, 90, 0));
+            System.Console.Write(_tileSystem.Get(2, 2).Rotate);
+            System.Console.WriteLine(_tileSystem.Get(2, 2).TextureVariant);
+        }
+        
     }
 
     protected override void Update(GameTime gameTime) {

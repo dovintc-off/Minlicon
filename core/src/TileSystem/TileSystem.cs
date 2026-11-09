@@ -122,11 +122,12 @@ public class TileSystem {
 }
 
 public struct TileCell {
-    public TileCell(GroundDefinition ground, BuildingInstance? building) {
+    public TileCell(GroundDefinition ground, BuildingInstance? building) : this(ground, building, 0, 0){}
+    public TileCell(GroundDefinition ground, BuildingInstance? building, int rotate, int textureVariant) {
         Ground = ground;
         Building = building;
-        Rotate = 0;
-        TextureVariant = 0;
+        Rotate = rotate;
+        TextureVariant = textureVariant;
     }
     public GroundDefinition Ground { get; set; }
     public BuildingInstance? Building { get; set; }

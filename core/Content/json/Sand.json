@@ -1,5 +1,9 @@
 {
     "Name": "Sand",
-    "Type": "Ground1",
-    "Drawer": {}
+    "Type": "Ground",
+    "Drawer": {},
+    "RandomDrawer": {
+        "Textures": ["assets-raw/Sand-1", "assets-raw/Sand-2"],
+        "Rotates": [0, 90, 180, 270]
+    }
 }
