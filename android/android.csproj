@@ -21,7 +21,8 @@
                   Link="assets/data/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <Target Name="GenerateMGCB" BeforeTargets="RunContentBuilder">
-    <Exec Command="dotnet-script &quot;$(MSBuildThisFileDirectory)../core/tools/GenerateMGCB.csx&quot;" />
+    <Exec Command="dotnet-script &quot;$(MSBuildProjectDirectory)/../core/tools/GenerateMGCB.csx&quot;"
+      WorkingDirectory="$(MSBuildProjectDirectory)/.." />
   </Target>
   <ItemGroup>
       <Compile Remove="tools/**/*.cs" />

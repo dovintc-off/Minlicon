@@ -68,6 +68,13 @@ jobs:
       - name: Restore .NET tools
         run: dotnet tool restore
 
+      - name: Install dotnet-script
+        run: dotnet tool install --global dotnet-script
+
+      - name: Add dotnet tools to PATH
+        run: echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
+        shell: pwsh
+
       - name: Install Java
         uses: actions/setup-java@v4
         with:
