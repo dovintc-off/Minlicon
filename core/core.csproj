@@ -19,4 +19,7 @@
       <LogicalName>Minlicon.assets.fonts.MedeoSans-Black.ttf</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+      <Compile Remove="tools/**/*.cs" />
+  </ItemGroup>
 </Project>

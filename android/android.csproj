@@ -23,4 +23,7 @@
   <Target Name="GenerateMGCB" BeforeTargets="RunContentBuilder">
     <Exec Command="dotnet-script &quot;$(MSBuildThisFileDirectory)../core/tools/GenerateMGCB.csx&quot;" />
   </Target>
+  <ItemGroup>
+      <Compile Remove="tools/**/*.cs" />
+  </ItemGroup>
 </Project>
