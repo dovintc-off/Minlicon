@@ -1,0 +1,41 @@
+
+name: Generate Content
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate MGCB
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Install dotnet-script
+        run: dotnet tool install --global dotnet-script
+
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Generate content
+        run: dotnet-script ./core/tools/GenerateMGCB.csx
+
+      - name: Upload generated content
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-content
+          path: |
+            core/Content/Content.mgcb
+            core/Content/index.txt
+          if-no-files-found: error
+          retention-days: 1

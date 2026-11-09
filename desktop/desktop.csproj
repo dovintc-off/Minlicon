@@ -38,11 +38,10 @@
         <TargetPath>Content\json\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </Content>
   </ItemGroup>
-  <Target Name="GenerateMGCB" BeforeTargets="RunContentBuilder">
-    <Exec Command="dotnet-script &quot;$(MSBuildProjectDirectory)/../core/tools/GenerateMGCB.csx&quot;"
+  <Target Name="GenerateMGCB"
+    BeforeTargets="Build"
+    Condition="'$(SkipContentGeneration)' != 'true'">
+      <Exec Command="dotnet-script &quot;$(MSBuildProjectDirectory)/../core/tools/GenerateMGCB.csx&quot;"
       WorkingDirectory="$(MSBuildProjectDirectory)/.." />
   </Target>
-  <ItemGroup>
-      <Compile Remove="tools/**/*.cs" />
-  </ItemGroup>
 </Project>
