@@ -2,6 +2,8 @@
 **/bin/
 **/obj/
 **.config/
+/dotnet-tools.json
+*.mgstats
 
 # IDE and user-specific files
 .vs/
@@ -9,6 +11,7 @@
 *.user
 *.suo
 .vscode/
+/target/
 
 # Android and other generated packages
 *.apk
@@ -18,5 +21,3 @@
 # Local files
 *.log
 *.txt
-*.mgstats
-/dotnet-tools.json
