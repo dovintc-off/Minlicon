@@ -1,3 +1,6 @@
+use tokio::runtime::Builder;
+use std::thread;
+
 struct ServerPlayer {
     pub id: u32,
     pub x: f32, // Координаты в дробных числах (float)
@@ -16,8 +19,23 @@ impl ServerPlayer {
     }
 }
 
+fn get_threadings() -> usize {
+    let thread_count = thread::available_parallelism().map(|n| n.get()).unwrap_or(1);
+    thread_count
+}
+
 fn main() {
-    // Создает изменяемого игрока. Без 'mut' метод move_right вызвать нельзя
+    let threads = get_threadings();
+
+    let runtime = Builder::new_multi_thread()
+        .worker_threads(threads)
+        .enable_all()
+        .build()
+        .unwrap();
+    
+    runtime.block_on(async {println!("Доступно потоков {}", threads)});
+    
+
     let mut player = ServerPlayer::new(1);
     
     player.move_right(12.7);
