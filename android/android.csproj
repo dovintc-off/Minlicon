@@ -4,10 +4,23 @@
     <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
     <OutputType>Exe</OutputType>
     <ApplicationId>Minlicon.Android.Minlicon.Android</ApplicationId>
-    <ApplicationVersion>0.2</ApplicationVersion>
-    <ApplicationDisplayVersion>0.2.0-alpha</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>0.0.0</ApplicationDisplayVersion>
     <AndroidEnableFastDeployment Condition="'$(Configuration)' == 'Debug'">false</AndroidEnableFastDeployment>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionFile>$(MSBuildProjectDirectory)\..\build.yml</VersionFile>
+    <YamlContent Condition="Exists('$(VersionFile)')">$([System.IO.File]::ReadAllText('$(VersionFile)'))</YamlContent>
+
+    <ApplicationVersion Condition="'$(YamlContent)' != ''">$([System.Text.RegularExpressions.Regex]::Replace($(YamlContent), '(?s).*?version_code:\s*(\d+).*', '$1'))</ApplicationVersion>
+    <ApplicationDisplayVersion Condition="'$(YamlContent)' != ''">$([System.Text.RegularExpressions.Regex]::Replace($(YamlContent), '(?s).*?version:\s*["'']?([^"''\r\n]+).*', '$1'))</ApplicationDisplayVersion>
+  </PropertyGroup>
+
+  <Target Name="LoadVersionFromYaml" BeforeTargets="PrepareForBuild;BeforeBuild;_GenerateAndroidManifest">
+    <Message Text="Minlicon Build Version: $(ApplicationDisplayVersion) (Code: $(ApplicationVersion))" Importance="high" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
     <PackageReference Include="MonoGame.Framework.Android" Version="3.8.*" />

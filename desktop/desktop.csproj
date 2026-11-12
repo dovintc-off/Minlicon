@@ -5,6 +5,14 @@
     <RollForward>Major</RollForward>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
+    <Copyright>© 2026 Dovitc-off</Copyright>
+    <VersionFile>$(MSBuildProjectDirectory)\..\build.yml</VersionFile>
+    <YamlContent Condition="Exists('$(VersionFile)')">$([System.IO.File]::ReadAllText('$(VersionFile)'))</YamlContent>
+    <GameVersion Condition="'$(YamlContent)' != ''">$([System.Text.RegularExpressions.Regex]::Replace($(YamlContent), '(?s).*?version:\s*["'']?([^"''\r\n]+).*', '$1'))</GameVersion>
+    <Version Condition="'$(GameVersion)' != ''">$(GameVersion)</Version>
+    <InformationalVersion Condition="'$(GameVersion)' != ''">$(GameVersion)</InformationalVersion>
+    <AssemblyVersion Condition="'$(GameVersion)' != ''">$([System.Text.RegularExpressions.Regex]::Replace($(GameVersion), '^(\d+\.\d+\.\d+)(?:-.*)?$', '$1.0'))</AssemblyVersion>
+    <FileVersion Condition="'$(GameVersion)' != ''">$([System.Text.RegularExpressions.Regex]::Replace($(GameVersion), '^(\d+\.\d+\.\d+)(?:-.*)?$', '$1.0'))</FileVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
