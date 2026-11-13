@@ -39,7 +39,7 @@ with open(file_path, "wb") as f:
     
     # Step 4
     
-    WORLD = [[1 if row % 2 == 0 else 2 for _ in range(100)] for row in range(100)]
+    WORLD = [[1 if row % 2 == 1 else 2 for _ in range(100)] for row in range(100)]
 
     flat_world = [tile for row in WORLD for tile in row]
     world_bytes = bytes(flat_world)

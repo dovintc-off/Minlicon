@@ -5,6 +5,7 @@ using Minlicon.Core.Graphics;
 namespace Minlicon.Core.TileSystem;
 
 public class TileRegistry {
+    public static TileRegistry Instance { get; private set; } = null!;
     public Dictionary<string, GroundDefinition> Grounds { get; } = new();
     public Dictionary<string, BuildingDefinition> Buildings { get; } = new();
     private Dictionary<string, string> JsonData = new Dictionary<string, string> { { "Error", "Umad" } };
@@ -12,6 +13,7 @@ public class TileRegistry {
     public TileRegistry(Dictionary<string, string> jsonData) {
         SetJsonData(jsonData);
         Load();
+        Instance = this;
     }
 
     private void SetJsonData(Dictionary<string, string> data) {

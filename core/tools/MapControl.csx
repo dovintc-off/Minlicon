@@ -26,7 +26,13 @@ public void Read(string file) {
 
             byte[] sequentialWorld = reader.ReadBytes((int)mapDataLength);
             
-            Console.WriteLine($"Загружено тайлов подряд: {sequentialWorld.Length}");
+            Console.WriteLine($"Загружено тайлов подряд: {sequentialWorld}");
+            Dictionary<int, string> idToGround = groundList.ToDictionary(pair => pair.Value, pair => pair.Key);
+            foreach (byte _b in sequentialWorld) {
+                if (idToGround.TryGetValue((int)_b, out string groundName)) {
+                    System.Console.WriteLine(groundName);
+                }
+            }
             continue;
         }
 

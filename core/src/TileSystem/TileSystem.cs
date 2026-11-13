@@ -3,10 +3,16 @@ namespace Minlicon.Core.TileSystem;
 public class TileSystem {
     private const int MaxWorldSize = 2000;
     private const int MinWorldSize = 100;
+    public string? MapAuthor {get; set;} = null; 
+    public string? MapDesc {get; set;} = null;
     private readonly TileCell[,] World;
 
+    public TileSystem(TileCell[,] world, string? author, string? desc){
+        this.MapAuthor = author;
+        this.MapDesc = desc;
+        World = world; // Временно
+    }
     public TileSystem(int Size, GroundDefinition defaultGround) : this(Size, Size, defaultGround) {}
-
     public TileSystem(int width, int height, GroundDefinition defaultGround) {
         if (width < MinWorldSize || height < MinWorldSize ||
             width > MaxWorldSize || height > MaxWorldSize) {
