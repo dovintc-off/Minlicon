@@ -10,12 +10,9 @@ using System.Collections.Generic;
 
 public class MainDesktop : Main {
     public MainDesktop() : base(){}
-    protected override void ConfigurePlatformGraphics() {
-        _graphics.SynchronizeWithVerticalRetrace = false;
-        _graphics.PreferredBackBufferWidth = 1280;
-        _graphics.PreferredBackBufferHeight = 720;
-        _graphics.IsFullScreen = false;
-        Window.Title = "Minlicon";
+    protected override void DrawPlatformCursor(SpriteBatch spriteBatch, PlayOnMap scene) {
+        if (scene.CursorTexture != null)
+            spriteBatch.Draw(scene.CursorTexture, scene.MouseScreenPosition, Color.White);
     }
 
     protected override Dictionary<string, string> LoadRegistryData() {
@@ -24,8 +21,7 @@ public class MainDesktop : Main {
         if (!Directory.Exists(targetFolder)) {
             Console.WriteLine($"Папка с данными не найдена по пути: {targetFolder}");
             return result;
-        }
-        try {
+        } try {
             string[] jsonFiles = Directory.GetFiles(targetFolder, "*.json", SearchOption.AllDirectories);
 
             foreach (string filePath in jsonFiles) {
@@ -38,30 +34,25 @@ public class MainDesktop : Main {
         }
         return result;
     }
-    protected override void HandlePlatformInput(GameTime gameTime, KeyboardState kState, MouseState mState){
-        // Базовая скорость (пикселей в секунду)
-        float baseSpeed = 400f; 
+
+    protected override void HandlePlatformInput(PlayOnMap scene, GameTime gameTime, KeyboardState kState, MouseState mState, MouseState previousMouseState ) {
+        float baseSpeed = 400f;
+
         if (kState.IsKeyDown(Keys.LeftShift) || kState.IsKeyDown(Keys.RightShift)) baseSpeed *= 2.5f;
+        float cameraSpeed = baseSpeed * (1f / scene.Zoom) * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        // Чем ближе камера (больше Zoom), тем медленнее она ползет
-        float cameraSpeed = baseSpeed * (1f / Zoom) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        (float x, float y) = (0f, 0f);
+        if (kState.IsKeyDown(Keys.A)) x -= cameraSpeed;
+        if (kState.IsKeyDown(Keys.D)) x += cameraSpeed;
+        if (kState.IsKeyDown(Keys.W)) y -= cameraSpeed;
+        if (kState.IsKeyDown(Keys.S)) y += cameraSpeed;
 
-        if (kState.IsKeyDown(Keys.A)) WorldCameraX -= cameraSpeed;
-        if (kState.IsKeyDown(Keys.D)) WorldCameraX += cameraSpeed;
-        if (kState.IsKeyDown(Keys.W)) WorldCameraY -= cameraSpeed;
-        if (kState.IsKeyDown(Keys.S)) WorldCameraY += cameraSpeed;
-
-        if (mState.ScrollWheelValue != _prevMouseState.ScrollWheelValue) {
-            int scrollDelta = mState.ScrollWheelValue - _prevMouseState.ScrollWheelValue;
-            _targetZoom += Math.Sign(scrollDelta) * 0.15f;
-            _targetZoom = MathHelper.Clamp(_targetZoom, _minZoom, _maxZoom);
+        scene.MoveCamera(x, y);
+        if (mState.ScrollWheelValue != previousMouseState.ScrollWheelValue) { 
+            int delta = mState.ScrollWheelValue - previousMouseState.ScrollWheelValue;
+            scene.AdjustTargetZoom(Math.Sign(delta) * 0.15f);
         }
 
-        // за плавность теперь отвечает ядро
-        _mouseScreenPos = mState.Position.ToVector2();
-    }
-
-    protected override void DrawPlatformCursor(SpriteBatch spriteBatch, Texture2D cursorTexture) {
-        spriteBatch.Draw(cursorTexture, _mouseScreenPos, Color.White);
+        scene.SetMousePosition(mState.Position.ToVector2());
     }
 }

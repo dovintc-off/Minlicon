@@ -15,22 +15,17 @@ public class MainAndroid : Main {
     private long _lastBackPressTime;
     private GamePadState _prevGamePadState;
 
-    protected override void ConfigurePlatformGraphics() {
-        _graphics.IsFullScreen = true;
-        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-    }
+    protected override void DrawPlatformCursor(SpriteBatch spriteBatch, PlayOnMap scene) {}
 
-    protected override void HandlePlatformInput(GameTime gameTime, KeyboardState kState, MouseState mState) {
+    protected override void HandlePlatformInput(PlayOnMap scene, GameTime gameTime, KeyboardState kState, MouseState mState, MouseState previousMouseState) {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed && 
             _prevGamePadState.Buttons.Back == ButtonState.Released) {
             
             long currentTime = DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond;
             long diff = currentTime - _lastBackPressTime;
 
-            if (diff < 5000) {
-                Exit();
-            } else {
+            if (diff < 5000) Exit();
+            else {
                 _lastBackPressTime = currentTime;
 
                 Game.Activity.RunOnUiThread(() => {
