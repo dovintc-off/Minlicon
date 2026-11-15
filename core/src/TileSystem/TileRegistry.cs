@@ -7,7 +7,7 @@ namespace Minlicon.Core.TileSystem;
 public class TileRegistry {
     public static TileRegistry Instance { get; private set; } = null!;
     public Dictionary<string, GroundDefinition> Grounds { get; } = new();
-    public Dictionary<string, BuildingDefinition> Buildings { get; } = new();
+    public Dictionary<string, BlockDefinition> Buildings { get; } = new();
     private Dictionary<string, string> JsonData = new Dictionary<string, string> { { "Error", "Umad" } };
     
     public TileRegistry(Dictionary<string, string> jsonData) {
@@ -32,7 +32,7 @@ public class TileRegistry {
                         string? type = typeElement.GetString();
 
                         if (type != null && type == "Building") {
-                            var building = JsonSerializer.Deserialize<BuildingDefinition>(value, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            var building = JsonSerializer.Deserialize<BlockDefinition>(value, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                             if (building != null) {
                                 this.Buildings[building.Name] = building;
                             } else {

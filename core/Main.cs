@@ -7,6 +7,7 @@ using Minlicon.Core.Graphics;
 namespace Minlicon.Core;
 
 public partial class Main : Game {
+    protected readonly SceneManager _sceneManager = new();
     protected GraphicsDeviceManager _graphics;
     protected SpriteBatch? _spriteBatch;
 
@@ -78,11 +79,135 @@ public partial class Main : Game {
             System.Console.Write(_tileSystem.Get(2, 2).Rotate);
             System.Console.WriteLine(_tileSystem.Get(2, 2).TextureVariant);
         }
-        
+
+        _sceneManager.Reg(new GameScene(this));
+        _sceneManager.Next("Game");
     }
 
     protected override void Update(GameTime gameTime) {
         UpdateInput(gameTime);
+        _sceneManager.Update(gameTime);
         base.Update(gameTime);
     }
+
+    internal void DrawWorld() {
+        _worldDrawer.Draw(
+            WorldCameraX,
+            WorldCameraY,
+            Zoom,
+            GraphicsDevice.Viewport,
+            _hoveredTile
+        );
+    }
+}
+
+public class GameScene : Scene {
+    public GameScene(Main game) : base(game, "Game") {}
+
+    public override void Draw(GameTime gt) {
+        main.DrawWorld();
+
+        base.Draw(gt);
+    }
+
+    public override void Update(GameTime gt) {
+        base.Update(gt);
+    }
+}
+
+public class SceneManager {
+    private readonly Dictionary<string, Scene> _scenes = new();
+
+    public Scene? ActualScene {get; private set;}
+
+    public void Reg(Scene _newScene) {
+        _scenes[_newScene.Name] = _newScene;
+    }
+
+    public void Next(string name) {
+        if (!_scenes.TryGetValue(name, out var next)) {
+            throw new Exception($"Scene {name} is not found");
+        }
+        if (ActualScene == next) return;
+        ActualScene?.Exit(); ActualScene?.Unload();
+        ActualScene = next;
+        ActualScene.Load(); ActualScene.Enter();
+    }
+
+    public void Draw(GameTime gt) {
+        if (ActualScene == null) throw new Exception($"ActualScene is null");
+        ActualScene.Draw(gt);
+    }
+
+    public void Update(GameTime gt) {
+        if (ActualScene == null) throw new Exception($"ActualScene is null");
+        ActualScene.Update(gt);
+    }
+}
+
+public abstract class Scene {
+    public Overlay? Overlay {get; protected set;}
+    protected Main main {get;}
+    public string Name {get; private set;}
+
+    protected Scene(Main game, string name) {
+        main = game;
+        Name = name;
+    }
+
+    public virtual void Unload() {}
+    public virtual void Load() {}
+    public virtual void Exit() {}
+    public virtual void Enter() {}
+    public virtual void Update(GameTime gt) {
+        Overlay?.Update(gt);
+    }
+    public virtual void Draw(GameTime gt) {
+        Overlay?.Draw(gt);
+    }
+}
+
+public class Overlay {
+    public UIManger UI {get;}
+
+    public Overlay() {
+        UI = new UIManger();
+    }
+
+    public void Update(GameTime gt) {
+        UI.Update(gt);
+    }
+
+    public void Draw(GameTime gt) {
+        UI.Draw(gt);
+    }
+}
+
+public class UIManger {
+    private readonly List<UIObject> UIObjects = new();
+
+    public void New(UIObject obj) {
+        UIObjects.Add(obj);
+    }
+
+    public void Update(GameTime gt){
+        foreach (UIObject obj in UIObjects) {
+            obj.Update(gt);
+        }
+    }
+
+    public void Draw(GameTime gt){
+        foreach (UIObject obj in UIObjects) {
+            obj.Draw(gt);
+        }
+    }
+}
+
+public abstract class UIObject {
+    public virtual void Update(GameTime gt) {}
+    public virtual void Draw(GameTime gt) {}
+}
+
+public class InputUI : UIObject {
+    
 }

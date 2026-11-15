@@ -32,7 +32,7 @@ public partial class Main {
                              Matrix.CreateTranslation(new Vector3(screenCenterX, screenCenterY, 0));
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, cameraMatrix);
-        _worldDrawer.Draw(WorldCameraX, WorldCameraY, Zoom, GraphicsDevice.Viewport, _hoveredTile);
+        _sceneManager.Draw(gameTime);
         _spriteBatch.End();
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);

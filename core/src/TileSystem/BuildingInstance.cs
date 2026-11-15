@@ -2,7 +2,7 @@ namespace Minlicon.Core.TileSystem;
 
 public class BuildingInstance 
 {
-    public BuildingDefinition Definition { get; }
+    public BlockDefinition Definition { get; }
     public int X { get; }
     public int Y { get; }
 
@@ -14,7 +14,7 @@ public class BuildingInstance
 
     public int Health { get; set; }
 
-    public BuildingInstance(BuildingDefinition definition, int x, int y) {
+    public BuildingInstance(BlockDefinition definition, int x, int y) {
         Definition = definition;
         X = x;
         Y = y;

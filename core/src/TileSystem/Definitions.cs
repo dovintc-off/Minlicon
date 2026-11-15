@@ -32,8 +32,8 @@ public sealed class LayerDefinition {
     [JsonIgnore] public Rectangle AtlasRect { get; set; }
 }
 
-public class BuildingDefinition {
-    public BuildingDefinition(string name, int width, int height, int maxHealth, bool rotateble = false) {
+public class BlockDefinition {
+    public BlockDefinition(string name, int width, int height, int maxHealth, bool rotateble = false) {
         Name = name;
         Width = width;
         Height = height;

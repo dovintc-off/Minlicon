@@ -16,7 +16,7 @@ public class UnitTest2 {
         TileSystem world = new TileSystem(100, CreateGround());
 
         BuildingInstance building = new BuildingInstance(
-            new BuildingDefinition("drill", 2, 2, 100),
+            new BlockDefinition("drill", 2, 2, 100),
             10, 10
         );
 
@@ -33,12 +33,12 @@ public class UnitTest2 {
         TileSystem world = new TileSystem(100, CreateGround());
 
         BuildingInstance first = new BuildingInstance(
-            new BuildingDefinition("drill", 2, 2, 100),
+            new BlockDefinition("drill", 2, 2, 100),
             10, 10
         );
 
         BuildingInstance second = new BuildingInstance(
-            new BuildingDefinition("storage", 2, 2, 100),
+            new BlockDefinition("storage", 2, 2, 100),
             11, 11
         );
 
@@ -53,7 +53,7 @@ public class UnitTest2 {
         TileSystem world = new TileSystem(100, CreateGround());
 
         BuildingInstance building = new BuildingInstance(
-            new BuildingDefinition("drill", 2, 2, 100),
+            new BlockDefinition("drill", 2, 2, 100),
             10, 10
         );
 
@@ -68,7 +68,7 @@ public class UnitTest2 {
         TileSystem world = new TileSystem(100, CreateGround());
 
         BuildingInstance building = new BuildingInstance(
-            new BuildingDefinition("drill", 2, 2, 100),
+            new BlockDefinition("drill", 2, 2, 100),
             10, 10
         );
 
@@ -88,7 +88,7 @@ public class UnitTest2 {
         GroundDefinition ground = world.Get(10, 10).Ground;
 
         BuildingInstance building = new BuildingInstance(
-            new BuildingDefinition("drill", 2, 2, 100),
+            new BlockDefinition("drill", 2, 2, 100),
             10, 10
         );
 
