@@ -13,8 +13,6 @@ public partial class Main {
     protected string _fpsText = "FPS: 0";
     protected Texture2D? _pixelBackground;
 
-    protected virtual void DrawPlatformCursor(SpriteBatch spriteBatch, Texture2D cursorTexture) {}
-
     protected override void Draw(GameTime gameTime) {
         UpdateRenderedFps();
         GraphicsDevice.Clear(Color.Black);

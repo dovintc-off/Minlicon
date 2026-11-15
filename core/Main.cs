@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Minlicon.Core.Graphics;
 using Minlicon.Core.Scenes;
@@ -43,7 +44,22 @@ public partial class Main : Game {
     }
 
     protected override void Update(GameTime gameTime) {
+        KeyboardState keyboard = Keyboard.GetState();
+        MouseState mouse = Mouse.GetState();
+
+        InputState input = new InputState(
+            keyboard, mouse, _previousKeyboardState, _previousMouseState
+        );
+
+        HandlePlatformInput(gameTime, keyboard, mouse);
+
+        _sceneManager.ActualScene?.HandleInput(gameTime, input);
+
+        _previousKeyboardState = keyboard;
+        _previousMouseState = mouse;
+
         _sceneManager.Update(gameTime);
+
         base.Update(gameTime);
     }
 }

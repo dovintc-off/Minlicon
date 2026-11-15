@@ -36,16 +36,89 @@ public class PlayOnMap : Scene {
     private Point _hoveredTile = new(-1, -1);
     private Vector2 _mouseScreenPos;
 
-    private MouseState _prevMouseState;
-    private KeyboardState _prevKeyboardState;
-
+    private const double SimulationTickDuration = 1.0 / 60.0;
+    private const double MaximumAccumulatedTime = 0.25;
     private double _tickAccumulator;
 
     public PlayOnMap(Main game) : base(game, "PlayOnMap") {
         Overlay = new Overlay();
     }
 
+    public override void HandleInput(GameTime gameTime, InputState input) {
+        KeyboardState kState = input.Keyboard;
+        MouseState mState = input.Mouse;
+
+        // Mouse position
+        SetMousePosition(mState.Position.ToVector2());
+
+        // Exit
+        if (kState.IsKeyDown(Keys.Escape)) main.Exit();
+
+        // Debug
+        if (kState.IsKeyDown(Keys.F3) &&
+            input.PreviousKeyboard.IsKeyUp(Keys.F3)) {
+            main.ToggleDebug();
+        }
+
+        // Camera movement
+        float baseSpeed = 400f;
+
+        if (kState.IsKeyDown(Keys.LeftShift) ||
+            kState.IsKeyDown(Keys.RightShift)) {
+            baseSpeed *= 2.5f;
+        }
+
+        float cameraSpeed =
+            baseSpeed *
+            (1f / Zoom) *
+            (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        float x = 0f;
+        float y = 0f;
+
+        if (kState.IsKeyDown(Keys.A)) x -= cameraSpeed;
+        if (kState.IsKeyDown(Keys.D)) x += cameraSpeed;
+        if (kState.IsKeyDown(Keys.W)) y -= cameraSpeed;
+        if (kState.IsKeyDown(Keys.S)) y += cameraSpeed;
+
+        MoveCamera(x, y);
+
+        // Zoom
+        if (mState.ScrollWheelValue != input.PreviousMouse.ScrollWheelValue) {
+            int delta = mState.ScrollWheelValue -
+                        input.PreviousMouse.ScrollWheelValue;
+
+            AdjustTargetZoom(Math.Sign(delta) * 0.15f);
+        }
+    }
+
     public override void Update(GameTime gt) {
+
+        float lerpSpeed = 10f * (float)gt.ElapsedGameTime.TotalSeconds;
+
+        _zoom = MathHelper.Lerp(_zoom, _targetZoom, MathHelper.Clamp(lerpSpeed, 0f, 1f));
+
+        _tickAccumulator = Math.Min(
+            _tickAccumulator + gt.ElapsedGameTime.TotalSeconds,
+            MaximumAccumulatedTime
+        );
+
+        while (_tickAccumulator >= SimulationTickDuration) {
+
+            _hoveredTile = new Point(
+                (int)Math.Floor(
+                    ((_mouseScreenPos.X - main.GraphicsDevice.Viewport.Width / 2f) / _zoom + _cameraX) / TileSize
+                ),
+                (int)Math.Floor(
+                    ((_mouseScreenPos.Y - main.GraphicsDevice.Viewport.Height / 2f) / _zoom + _cameraY) / TileSize
+                )
+            );
+            _tickAccumulator -= SimulationTickDuration;
+        }
+
+        _cameraX = MathHelper.Clamp(_cameraX, 0f, MapWidth * TileSize);
+        _cameraY = MathHelper.Clamp(_cameraY, 0f, MapHeight * TileSize);
+
         base.Update(gt);
     }
 
@@ -60,8 +133,9 @@ public class PlayOnMap : Scene {
         );
 
         atlasGenerator.BakeRegistry(_tileRegistry);
+#if WINDOWS
         atlasGenerator.SaveAtlas("atlas.png");
-
+#endif
         _globalAtlas = atlasGenerator.GetAtlas();
 
         GroundDefinition defaultGround = _tileRegistry.Grounds["Grass"];
@@ -84,9 +158,6 @@ public class PlayOnMap : Scene {
 
         _cameraX = (MapWidth * TileSize) / 2f;
         _cameraY = (MapHeight * TileSize) / 2f;
-
-        _prevMouseState = Mouse.GetState();
-        _prevKeyboardState = Keyboard.GetState();
 
         for (int i = 1; i < MapWidth; i++) {
             _tileSystem.Set(

@@ -12,12 +12,18 @@ using global::Android.Content.Res;
 public class MainAndroid : Main {
     public MainAndroid() : base() {}
 
+    protected override void ConfigurePlatformGraphics() {
+        _graphics.IsFullScreen = true;
+        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+    }
+
     private long _lastBackPressTime;
     private GamePadState _prevGamePadState;
 
     protected override void DrawPlatformCursor(SpriteBatch spriteBatch, PlayOnMap scene) {}
 
-    protected override void HandlePlatformInput(PlayOnMap scene, GameTime gameTime, KeyboardState kState, MouseState mState, MouseState previousMouseState) {
+    protected override void HandlePlatformInput(GameTime gameTime, KeyboardState keyboard, MouseState mouse)  {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed && 
             _prevGamePadState.Buttons.Back == ButtonState.Released) {
             
@@ -44,7 +50,7 @@ public class MainAndroid : Main {
     protected override Dictionary<string, string> LoadRegistryData()  {
         var result = new Dictionary<string, string>();
         global::Android.Content.Res.AssetManager assets = Game.Activity.Assets;
-        ListAssetsRecursively(assets, "data", result);
+        ListAssetsRecursively(assets, Path.Combine("Content", "json"), result);
         return result;
     }
 
@@ -73,6 +79,4 @@ public class MainAndroid : Main {
             Console.WriteLine($"Не удалось прочитать ассеты по пути {currentPath}: {ex.Message}");
         }
     }
-
-    protected override void DrawPlatformCursor(SpriteBatch spriteBatch, Texture2D cursorTexture) {}
 }

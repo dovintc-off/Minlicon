@@ -10,6 +10,15 @@ using System.Collections.Generic;
 
 public class MainDesktop : Main {
     public MainDesktop() : base(){}
+
+    protected override void ConfigurePlatformGraphics() {
+        _graphics.SynchronizeWithVerticalRetrace = false;
+        _graphics.PreferredBackBufferWidth = 1280;
+        _graphics.PreferredBackBufferHeight = 720;
+        _graphics.IsFullScreen = false;
+        Window.Title = "Minlicon";
+    }
+
     protected override void DrawPlatformCursor(SpriteBatch spriteBatch, PlayOnMap scene) {
         if (scene.CursorTexture != null)
             spriteBatch.Draw(scene.CursorTexture, scene.MouseScreenPosition, Color.White);
@@ -33,26 +42,5 @@ public class MainDesktop : Main {
             Console.WriteLine($"Ошибка при чтении JSON файлов: {ex.Message}");
         }
         return result;
-    }
-
-    protected override void HandlePlatformInput(PlayOnMap scene, GameTime gameTime, KeyboardState kState, MouseState mState, MouseState previousMouseState ) {
-        float baseSpeed = 400f;
-
-        if (kState.IsKeyDown(Keys.LeftShift) || kState.IsKeyDown(Keys.RightShift)) baseSpeed *= 2.5f;
-        float cameraSpeed = baseSpeed * (1f / scene.Zoom) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-        (float x, float y) = (0f, 0f);
-        if (kState.IsKeyDown(Keys.A)) x -= cameraSpeed;
-        if (kState.IsKeyDown(Keys.D)) x += cameraSpeed;
-        if (kState.IsKeyDown(Keys.W)) y -= cameraSpeed;
-        if (kState.IsKeyDown(Keys.S)) y += cameraSpeed;
-
-        scene.MoveCamera(x, y);
-        if (mState.ScrollWheelValue != previousMouseState.ScrollWheelValue) { 
-            int delta = mState.ScrollWheelValue - previousMouseState.ScrollWheelValue;
-            scene.AdjustTargetZoom(Math.Sign(delta) * 0.15f);
-        }
-
-        scene.SetMousePosition(mState.Position.ToVector2());
     }
 }

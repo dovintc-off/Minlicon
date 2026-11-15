@@ -12,6 +12,8 @@ public abstract class Scene {
         Name = name;
     }
 
+    public virtual void HandleInput(GameTime gameTime, InputState input) {}
+
     public virtual void Unload() {}
     public virtual void Load() {}
     public virtual void Exit() {}
