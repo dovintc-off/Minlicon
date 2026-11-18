@@ -3,10 +3,10 @@ namespace Minlicon.Core.Scenes;
 using Microsoft.Xna.Framework;
 
 public class Overlay {
-    public UIManger UI {get;}
+    public UIManager UI {get;}
 
     public Overlay() {
-        UI = new UIManger();
+        UI = new UIManager();
     }
 
     public void Update(GameTime gt) {
@@ -18,7 +18,7 @@ public class Overlay {
     }
 }
 
-public class UIManger {
+public class UIManager {
     private readonly List<UIObject> UIObjects = new();
 
     public void New(UIObject obj) {
